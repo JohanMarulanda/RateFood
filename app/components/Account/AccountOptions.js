@@ -1,13 +1,14 @@
 import React, { useState } from 'react'
-import { StyleSheet, View, Text } from "react-native"
+import { StyleSheet, View } from "react-native"
 import { ListItem } from "react-native-elements"
 import { map } from "lodash"
 import Modal from '../Modal'
 import ChangeDisplayNameForm from './ChangeDisplayNameForm'
 import ChangeEmailForm from './ChangeEmailForm'
+import ChangePasswordForm from './ChangePasswordForm'
 
 export default function AccounOptions(props) {
-    const { userInfo, toastRef, setReLoadUserInfo } = props;
+    const { userInfo, toastRef, setReloadUserInfo } = props;
     const [showModal, setShowModal] = useState(false)
     const [renderComponent, setRenderComponent] = useState(null)
     //console.log(props)
@@ -17,10 +18,8 @@ export default function AccounOptions(props) {
             case "displayName":
                 setRenderComponent(
                     <ChangeDisplayNameForm 
-                        displayName={userInfo.displayName}
                         setShowModal={setShowModal} 
                         toastRef={toastRef}
-                        setReLoadUserInfo={setReLoadUserInfo}
                     />
                 );
                 setShowModal(true);
@@ -31,14 +30,19 @@ export default function AccounOptions(props) {
                         email={userInfo.email}
                         setShowModal={setShowModal} 
                         toastRef={toastRef}
-                        setReLoadUserInfo={setReLoadUserInfo}
+                        setReloadUserInfo={setReloadUserInfo}
                     />
                 );
                 setShowModal(true);
                 break;
             case "password":
                 setRenderComponent(
-                    <Text>Cambiando Contraseña</Text>
+                    <ChangePasswordForm 
+                        email={userInfo.email}
+                        setShowModal={setShowModal} 
+                        toastRef={toastRef}
+                        setReloadUserInfo={setReloadUserInfo}
+                    />
                 );
                 setShowModal(true);
                 break;

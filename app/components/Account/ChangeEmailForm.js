@@ -4,12 +4,15 @@ import React, { useState } from "react"
 import { StyleSheet, View } from "react-native"
 import { Input, Button } from "react-native-elements"
 import { validateEmail } from '../../utils/validations'
+import { reauthenticate } from "../../utils/api"
+import * as firebase from "firebase"
 
 export default function ChangeEmailForm(props){
     const { email, setShowModal, toastRef, setReloadUserInfo } = props
     const [formData, setFormData] = useState(defaultValue())
     const [showPassword, setShowPassword] = useState(false)
     const [errors, setErrors] = useState({})
+    const [isLoading, setIsLoading] = useState(false)
 
     const onChange = (e, type) => {
         setFormData({...formData, [type]: e.nativeEvent.text})
@@ -24,12 +27,34 @@ export default function ChangeEmailForm(props){
             setErrors({
                 email: "Email incorrecto."
             })
-        } else if(!password){
+        } else if(!formData.password){
             setErrors({
                 password: "La contraseña no ha sido ingresada."
             })
         } else{
-            console.log("Ok")
+            setIsLoading(true)
+            reauthenticate(formData.password)
+            .then(() => {
+                firebase
+                    .auth()
+                    .currentUser.updateEmail(formData.email)
+                    .then(() => {
+                        setIsLoading(false)
+                        setReloadUserInfo(true)
+                        toastRef.current.show("Email actualizado correctamente.")
+                        setShowModal(false)
+                    })
+                    .catch((error) => {
+                        console.log(error)
+                        setErrors({ email: "Error al actualizar el email."})
+                        setIsLoading(false)
+                    })
+            }).catch(() => {
+                setIsLoading(false)
+                setErrors({
+                    password: "La contraseña no es correcta."
+                })
+            })
         }
     }
     return (
@@ -65,6 +90,7 @@ export default function ChangeEmailForm(props){
                 containerStyle={styles.btnContainer}
                 buttonStyle={styles.btn}
                 onPress={onSubmit}
+                loading={isLoading}
             />
         </View>
     )
