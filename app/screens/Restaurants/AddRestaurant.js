@@ -5,9 +5,9 @@ import Loading from "../../components/Loading"
 import AddRestaurantForm from "../../components/Restaurants/AddRestaurantForm"
 
 export default function AddRestaurant(props){
-    const { navigation } = props
-    const [isLoading, setIsLoading] = useState(false)
-    const toastRef = useRef()
+    const { navigation } = props;
+    const [isLoading, setIsLoading] = useState(false);
+    const toastRef = useRef();
     return (
         <View>
             <AddRestaurantForm 

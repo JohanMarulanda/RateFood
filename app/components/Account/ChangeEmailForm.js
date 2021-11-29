@@ -1,5 +1,3 @@
-import { DrawerContentScrollView } from "@react-navigation/drawer"
-import { SyntheticPlatformEmitter } from "expo-media-library/node_modules/expo-modules-core"
 import React, { useState } from "react"
 import { StyleSheet, View } from "react-native"
 import { Input, Button } from "react-native-elements"

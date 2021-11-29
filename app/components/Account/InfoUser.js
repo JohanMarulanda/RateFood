@@ -15,9 +15,9 @@ export default function InfoUser(props){
     } = props;
     
     const changeAvatar = async () => {
-        //const resultPremission = await Permissions.askAsync(Permissions.CAMERA);
+        const resultPermission = await Permissions.askAsync(Permissions.CAMERA);
         //console.log(resultPremission)
-        const resultPermission = await MediaLibrary.requestPermissionsAsync();
+        //const resultPermission = await MediaLibrary.requestPermissionsAsync();
         const generalResultPermission = resultPermission.status;
 
         if(generalResultPermission === "denied"){
