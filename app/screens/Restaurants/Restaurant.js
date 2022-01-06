@@ -1,9 +1,11 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useCallback } from "react";
 import { StyleSheet, Text, View, ScrollView, Dimensions } from "react-native";
 import Loading from "../../components/Loading";
 import Carousel from "../../components/Carousel";
 import Map from "../../components/Map";
-import { Rating, ListItem, Icon } from "react-native-elements";
+import { Rating, ListItem } from "react-native-elements";
+import { useFocusEffect } from "@react-navigation/native"
+import ListReviews from "../../components/Restaurants/ListReviews";
 import { firebaseApp } from "../../utils/firebase";
 import firebase from "firebase/app";
 import "firebase/firestore";
@@ -20,17 +22,19 @@ export default function Restaurant(props) {
 
     navigation.setOptions({ title: name });
 
-    useEffect(() => {
-        db.collection("restaurants")
-            .doc(id)
-            .get()
-            .then((response) => {
-                const data = response.data();
-                data.id = response.id;
-                setRestaurant(data);
-                setRating(data.rating);
-            });
-    }, []);
+    useFocusEffect(
+        useCallback(() => {
+            db.collection("restaurants")
+                .doc(id)
+                .get()
+                .then((response) => {
+                    const data = response.data();
+                    data.id = response.id;
+                    setRestaurant(data);
+                    setRating(data.rating);
+                });
+        }, [])
+    );
 
     if (!restaurant) return <Loading isVisible={true} text="Cargando..." />;
 
@@ -46,10 +50,14 @@ export default function Restaurant(props) {
                 description={restaurant.description}
                 rating={rating}
             />
-            <RestaurantInfo 
+            <RestaurantInfo
                 location={restaurant.location}
                 name={restaurant.name}
                 address={restaurant.address}
+            />
+            <ListReviews
+                navigation={navigation}
+                idRestaurant={restaurant.id}
             />
         </ScrollView>
     );
@@ -60,24 +68,24 @@ function TitleRestaurant(props) {
 
     return (
         <View style={styles.viewRestaurantTitle}>
-          <View style={{ flexDirection: "row" }}>
-            <Text style={styles.nameRestaurant}>{name}</Text>
-            <Rating 
-                style={styles.rating}
-                imageSize={20}
-                readonly
-                startingValue={parseFloat(rating)}
-            />
-          </View>
-          <Text style={styles.descriptionRestaurant}>{description}</Text>
+            <View style={{ flexDirection: "row" }}>
+                <Text style={styles.nameRestaurant}>{name}</Text>
+                <Rating
+                    style={styles.rating}
+                    imageSize={20}
+                    readonly
+                    startingValue={parseFloat(rating)}
+                />
+            </View>
+            <Text style={styles.descriptionRestaurant}>{description}</Text>
         </View>
-      );
-    
+    );
+
 }
 
 function RestaurantInfo(props) {
-    const { location, name, address} = props;
-    
+    const { location, name, address } = props;
+
     const listInfo = [
         {
             text: address,
@@ -103,9 +111,9 @@ function RestaurantInfo(props) {
             <Text style={styles.restaurantInfoTitle}>
                 Información sobre el restaurante
             </Text>
-            <Map location={location}  name={name} height={100} />
+            <Map location={location} name={name} height={100} />
             {map(listInfo, (item, index) => (
-                <ListItem 
+                <ListItem
                     key={index}
                     title={item.text}
                     leftIcon={{
@@ -136,7 +144,7 @@ const styles = StyleSheet.create({
         marginTop: 5,
         color: "grey",
     },
-    rating: { 
+    rating: {
         position: "absolute",
         right: 0,
     },
