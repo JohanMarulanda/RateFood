@@ -7,8 +7,8 @@
     "icon": "./assets/icon.png",
     "splash": {
       "image": "./assets/splash.png",
-      "resizeMode": "contain",
-      "backgroundColor": "#ffffff"
+      "resizeMode": "cover",
+      "backgroundColor": "#f00629"
     },
     "updates": {
       "fallbackToCacheTimeout": 0
@@ -42,6 +42,7 @@
     "web": {
       "favicon": "./assets/favicon.png"
     },
-    "description": ""
+    "description": "Personal project where I create a TripAdvisor of Restaurants using react native.",
+    "githubUrl": "https://github.com/JohanMarulanda/RateFood"
   }
 }
